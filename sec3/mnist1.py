@@ -107,11 +107,21 @@ print('pracision:', precision_rate, ' recall:', recall_rate, ' f-value:', f_valu
 
 #ROC曲線
 #AUC ROC曲線の下の面積　完璧な分類機 1 , 無作為: 0.5
-'''
+
 from sklearn.metrics import roc_curve, roc_auc_score
+'''
 fpr, tpr, threshold = roc_curve(y_train_5, y_score)
 
 roc_auc = roc_auc_score(y_train_5, y_score)
 print('ROC AUC: ', roc_auc) #ROC AUC:  0.9660259463088996
 '''
 
+#ランダムフォレスト
+from sklearn.ensemble import RandomForestClassifier
+'''
+forest_clf = RandomForestClassifier(random_state=42)
+y_probas_forest = cross_val_predict(forest_clf, X_train, y_train_5, cv=3)
+
+y_score_forest = y_probas_forest[:] #陽性クラスの確率
+pr, tpr, threshold = roc_curve(y_train_5, y_score_forest)
+'''
