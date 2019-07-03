@@ -37,6 +37,7 @@ from sklearn.linear_model import SGDClassifier
 
 sgd_clf = SGDClassifier(random_state=42) #random_state:SGDのランダムシード固定
 
+'''
 sgd_clf.fit(X_train, y_train) #y_train5ではない　=>10個のクラスがある（水面下で10個の二項分類器器を訓練している）
 some_digit_scores = sgd_clf.decision_function([some_digit])
 print('score:', some_digit_scores)
@@ -45,14 +46,26 @@ print('cls:', np.argmax(some_digit_scores), sgd_clf.classes_)
 
 #cross val
 from sklearn.model_selection import cross_val_score
-val = cross_val_score(sgd_clf, X_train, y_train, cv=3, scoring='accuracy')
-print('cross valid score:', val) #[0.85521583 0.86956522 0.86362271]
+#val = cross_val_score(sgd_clf, X_train, y_train, cv=3, scoring='accuracy')
+#print('cross valid score:', val) #[0.85521583 0.86956522 0.86362271]
+'''
 
 #入力値のスケーリング
 from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 X_train_Scaled = scaler.fit_transform(X_train.astype(np.float64))
-val = cross_val_score(sgd_clf, X_train_Scaled, y_train, cv=3, scoring='accuracy')
-print('cross valid score (X scaled):', val) #[0.90197842 0.90734633 0.89996996]
+#val = cross_val_score(sgd_clf, X_train_Scaled, y_train, cv=3, scoring='accuracy')
+#print('cross valid score (X scaled):', val) #[0.90197842 0.90734633 0.89996996]
 
+
+#3.5 誤分類の分析
+from sklearn.model_selection import cross_val_predict
+from sklearn.metrics import confusion_matrix
+
+y_train_pred = cross_val_predict(sgd_clf, X_train_Scaled, y_train, cv=3)
+conf_mx = confusion_matrix(y_train, y_train_pred)
+
+#割合に変換
+conf_mx = conf_mx / conf_mx.sum(axis=1, keepdims=True)
+print('混合行列 : ¥n ', conf_mx)
 
